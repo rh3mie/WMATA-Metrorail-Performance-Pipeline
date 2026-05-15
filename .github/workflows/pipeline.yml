@@ -2,10 +2,10 @@ name: WMATA ETL Pipeline
 
 on:
   schedule:
-    - cron: "*/15 5-23 * * 1-4"   # Mon-Thu 5am-midnight
-    - cron: "*/15 5-1 * * 5"      # Fri 5am-2am (next day)
-    - cron: "*/15 6-1 * * 6"      # Sat 6am-2am (next day)
-    - cron: "*/15 6-23 * * 0"     # Sun 6am-midnight
+    - cron: "*/15 5-23 * * 1-4"   # Mon-Thu 5am-11pm
+    - cron: "*/15 5-23 * * 5"     # Fri 5am-11pm
+    - cron: "*/15 6-23 * * 6"     # Sat 6am-11pm
+    - cron: "*/15 6-23 * * 0"     # Sun 6am-11pm
   workflow_dispatch:
 
 jobs:
