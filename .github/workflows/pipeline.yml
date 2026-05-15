@@ -2,8 +2,11 @@ name: WMATA ETL Pipeline
 
 on:
   schedule:
-    - cron: "*/15 6-22 * * 1-5"  # Every 15 min, 6am-10pm, weekdays
-  workflow_dispatch:  # Allows manual trigger from GitHub UI
+    - cron: "*/15 5-23 * * 1-4"   # Mon-Thu 5am-midnight
+    - cron: "*/15 5-1 * * 5"      # Fri 5am-2am (next day)
+    - cron: "*/15 6-1 * * 6"      # Sat 6am-2am (next day)
+    - cron: "*/15 6-23 * * 0"     # Sun 6am-midnight
+  workflow_dispatch:
 
 jobs:
   run-pipeline:
@@ -11,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
