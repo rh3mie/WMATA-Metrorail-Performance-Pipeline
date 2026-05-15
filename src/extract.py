@@ -31,6 +31,11 @@ def extract_predictions():
     response.raise_for_status()
     
     trains = response.json()["Trains"]
+    
+    if not trains:
+        print("⚠️ No train predictions available (likely outside operating hours)")
+        return pd.DataFrame()
+    
     df = pd.DataFrame(trains)
     df = df[["LocationCode", "LocationName", "Line", "Car", "Destination", "DestinationName", "Min"]]
     df.columns = ["station_code", "station_name", "line_code", "car", "destination_code", "destination_name", "minutes_to_arrival"]

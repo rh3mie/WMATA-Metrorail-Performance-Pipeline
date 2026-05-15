@@ -41,9 +41,12 @@ def load_dim_line(df):
 
 def load_fact_predictions(df):
     """Append predictions, then deduplicate in BigQuery."""
+    if df.empty:
+        print("⚠️ Skipping fact_train_predictions — no predictions to load")
+        return
+    
     load_table(df, "fact_train_predictions", write_mode="WRITE_APPEND")
     
-    # Deduplicate by keeping one row per (station_code, line_code, snapshot_timestamp)
     dedup_query = f"""
         CREATE OR REPLACE TABLE `{PROJECT}.{DATASET}.fact_train_predictions` AS
         SELECT * EXCEPT(row_num)
