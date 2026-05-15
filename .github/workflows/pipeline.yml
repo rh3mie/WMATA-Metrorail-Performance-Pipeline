@@ -1,0 +1,35 @@
+name: WMATA ETL Pipeline
+
+on:
+  schedule:
+    - cron: "*/15 6-22 * * 1-5"  # Every 15 min, 6am-10pm, weekdays
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write GCP service account key
+        run: echo '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}' > service_account.json
+
+      - name: Write .env file
+        run: |
+          echo "WMATA_API_KEY=${{ secrets.WMATA_API_KEY }}" >> .env
+          echo "GOOGLE_APPLICATION_CREDENTIALS=service_account.json" >> .env
+          echo "GCP_PROJECT=wmata-transit-pipeline" >> .env
+          echo "BQ_DATASET=wmata_transit" >> .env
+
+      - name: Run pipeline
+        run: python src/main.py
