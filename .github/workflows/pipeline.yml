@@ -19,7 +19,8 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt pyarrow pandas-gbq
+
 
       - name: Write GCP service account key
         run: echo '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}' > service_account.json
