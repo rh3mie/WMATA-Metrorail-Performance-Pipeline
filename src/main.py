@@ -17,7 +17,7 @@ from load import (
 )
 
 def run_pipeline():
-    print("🚇 Starting WMATA ETL Pipeline...\n")
+    print("Starting WMATA ETL Pipeline...\n")
 
     print("--- Step 1: Extracting ---")
     stations_raw = extract_stations()
@@ -36,7 +36,7 @@ def run_pipeline():
     load_fact_predictions(predictions_clean)
     load_fact_incidents(incidents_clean)
 
-    print("\n✅ Pipeline run complete!")
+    print("\n Pipeline run complete!")
 
 if __name__ == "__main__":
     run_pipeline()

@@ -16,7 +16,7 @@ client = bigquery.Client(project=PROJECT)
 def load_table(df, table_name, write_mode="WRITE_APPEND"):
     """Generic function to load a DataFrame into a BigQuery table."""
     if df.empty:
-        print(f"⚠️ Skipping {table_name} — DataFrame is empty")
+        print(f"Skipping {table_name}, df empty")
         return
 
     table_id = f"{PROJECT}.{DATASET}.{table_name}"
@@ -27,22 +27,22 @@ def load_table(df, table_name, write_mode="WRITE_APPEND"):
     )
 
     job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
-    job.result()  # Wait for job to complete
+    job.result()
 
-    print(f"✅ Loaded {len(df)} rows into {table_id}")
+    print(f"Loaded {len(df)} rows into {table_id}")
 
 def load_dim_station(df):
-    """Load stations as a replaced table — static data, no appending needed."""
+    """Load stations as a replaced table."""
     load_table(df, "dim_station", write_mode="WRITE_TRUNCATE")
 
 def load_dim_line(df):
-    """Load line dimension as a replaced table — static data."""
+    """Load line dimension as a replaced table."""
     load_table(df, "dim_line", write_mode="WRITE_TRUNCATE")
 
 def load_fact_predictions(df):
     """Append predictions, then deduplicate in BigQuery."""
     if df.empty:
-        print("⚠️ Skipping fact_train_predictions — no predictions to load")
+        print("Skipping fact_train_predictions, no predictions to load")
         return
     
     load_table(df, "fact_train_predictions", write_mode="WRITE_APPEND")
@@ -61,12 +61,12 @@ def load_fact_predictions(df):
         WHERE row_num = 1
     """
     client.query(dedup_query).result()
-    print(f"✅ Deduplicated fact_train_predictions")
+    print(f"Deduplicated fact_train_predictions")
 
 def load_fact_incidents(df):
     """Append incidents, then deduplicate in BigQuery."""
     if df.empty:
-        print("⚠️ Skipping fact_incidents — no incidents to load")
+        print("Skipping fact_incidents, no incidents to load")
         return
     
     load_table(df, "fact_incidents", write_mode="WRITE_APPEND")
@@ -85,7 +85,7 @@ def load_fact_incidents(df):
         WHERE row_num = 1
     """
     client.query(dedup_query).result()
-    print(f"✅ Deduplicated fact_incidents")
+    print(f"Deduplicated fact_incidents")
 
 if __name__ == "__main__":
     from extract import extract_stations, extract_predictions, extract_incidents
@@ -104,4 +104,4 @@ if __name__ == "__main__":
     load_fact_predictions(transform_predictions(extract_predictions()))
     load_fact_incidents(transform_incidents(extract_incidents()))
 
-    print("\n🎉 All tables loaded successfully!")
+    print("\n All tables loaded successfully!")

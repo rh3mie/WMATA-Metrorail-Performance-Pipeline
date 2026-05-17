@@ -21,7 +21,7 @@ def extract_stations():
     df = df[["Code", "Name", "LineCode1", "LineCode2", "LineCode3", "LineCode4", "Lat", "Lon"]]
     df.columns = ["station_code", "station_name", "line_code_1", "line_code_2", "line_code_3", "line_code_4", "latitude", "longitude"]
     
-    print(f"✅ Extracted {len(df)} stations")
+    print(f"Extracted {len(df)} stations")
     return df
 
 def extract_predictions():
@@ -33,7 +33,7 @@ def extract_predictions():
     trains = response.json()["Trains"]
     
     if not trains:
-        print("⚠️ No train predictions available (likely outside operating hours)")
+        print("No train predictions available (outside operating hours)")
         return pd.DataFrame()
     
     df = pd.DataFrame(trains)
@@ -41,7 +41,7 @@ def extract_predictions():
     df.columns = ["station_code", "station_name", "line_code", "car", "destination_code", "destination_name", "minutes_to_arrival"]
     df["snapshot_timestamp"] = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
     
-    print(f"✅ Extracted {len(df)} train predictions")
+    print(f"Extracted {len(df)} train predictions")
     return df
 
 def extract_incidents():
@@ -52,7 +52,7 @@ def extract_incidents():
     
     incidents = response.json()["Incidents"]
     if not incidents:
-        print("✅ No active incidents")
+        print("No active incidents")
         return pd.DataFrame()
     
     df = pd.DataFrame(incidents)
@@ -60,7 +60,7 @@ def extract_incidents():
     df.columns = ["incident_id", "incident_type", "lines_affected", "description", "date_updated"]
     df["snapshot_timestamp"] = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
     
-    print(f"✅ Extracted {len(df)} incidents")
+    print(f"Extracted {len(df)} incidents")
     return df
 
 if __name__ == "__main__":
