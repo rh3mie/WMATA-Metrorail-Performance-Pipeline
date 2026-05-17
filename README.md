@@ -1,79 +1,65 @@
 # WMATA Metrorail Performance Pipeline
-
-An automated ETL pipeline that collects, transforms, and visualizes real-time Washington DC Metro (WMATA) train performance data to support transit reliability analysis and operational decision-making.
+*By Rhey Mar De Vera*
 
 ## Business Problem
 
-Transit agencies and commuters lack easy access to historical train performance data. WMATA's real-time API only shows current conditions — once a moment passes, that data is gone. This pipeline captures and stores every snapshot, enabling trend analysis, delay pattern detection, and service reliability reporting that would otherwise be impossible.
+Transit agencies and commuters lack easy access to historical train performance data. WMATA's real-time API only shows current conditions, so once a moment passes, that data is gone. Without a system to capture and store these snapshots into train operations and incidents over time, it's impossible to identify delay patterns, evaluate service reliability trends, or understand how incidents impact commuter wait times across different lines and stations.
 
-## Solution
+## Solution/ Project Overview
 
-An end-to-end data pipeline that captures live WMATA Metrorail data every 15 minutes, transforms it into an analytics-ready star schema in Google BigQuery, and visualizes key performance indicators in a Looker Studio dashboard — enabling data-driven insights into service reliability, wait times, and incident patterns across all 6 Metro lines.
+This project builds an end-to-end automated ETL pipeline that captures live WMATA train predictions and service incidents every 15 minutes during business hours. Then, it transforms them into an analytics-ready star schema in Google BigQuery, and visualizes KPIs in a Looker Studio (Data Studio) dashboard. This gives insights into train performance/ operations, such as:
 
-## Business Impact
+- Train wait times by line and station
+- Peak vs. off-peak service patterns
+- Incident frequency and category trends
+- Station-level performance and delay patterns
 
-- **Operational visibility** — Identifies which Metro lines and stations experience the most delays and longest wait times, supporting infrastructure prioritization decisions
-- **Commuter impact analysis** — Quantifies peak hour wait times by station and line, revealing where service gaps most affect riders
-- **Incident trend reporting** — Tracks frequency and duration of service disruptions by line and incident type, enabling pattern detection over time
-- **Data-driven planning** — Provides historical performance benchmarks that transit planners can use to evaluate service improvements
+## Files
 
-## Dashboard KPIs
+- ```src/extract.py```: Pulls data from 3 WMATA APIs (stations, train predictions, incidents)
+- ```src/transform.py```: Cleans and transforms raw data into fact and dimension tables
+- ```src/load.py```: Loads transformed data into BigQuery
+- ```src/main.py```: Chains ETL scripts into one for a single pipeline run
+- ```.github/workflows/pipeline.yml```: GitHub actions workflow for automated scheduling
+- ```requirements.txt```: Python dependencies
 
-- Average wait time by Metro line and station
-- Incident frequency and category breakdown by line
-- Peak vs. off-peak wait time comparison by hour of day
-- Weekly service reliability trends
-- Top stations by average delay
+## Google BigQuery Database
+The data is structured into a star schema to optimize queries and support dashboard use in Looker. In total, there are 4 tables:
 
-## Architecture
-WMATA API → extract.py → transform.py → load.py → BigQuery → Looker Studio
-↑
-GitHub Actions (every 15 min)
+- ```fact_train_predictions```: For train prediction snapshots. Includes station, line, destination, minutes to arrival, and timestamp
+- ```fact_incidents```: For service incidents. Includes incident type, lines effected, description, and categorization
+- ```dim_station```: Station name, primary line, and geographic coordinates
+- ```dim_line```: line code, full line name, and hex color code
 
-## Tech Stack
+With this star schema, the data has clear relationships through primary and foreign keys across time, station, and line dimensions. This keeps the model scalable, easy to maintain, and optimized for querying.
 
-| Tool | Purpose |
-|---|---|
-| Python | Data extraction and transformation |
-| SQL | Deduplication and data modeling in BigQuery |
-| Google BigQuery | Cloud data warehouse |
-| Looker Studio | BI dashboard and data visualization |
-| GitHub Actions | Pipeline orchestration and scheduling |
+## Key Steps
 
-## Data Model
+### 1. Data Extraction
+Connected to the WMATA API using a free developer key and pulled data from three endpoints: rail station information, real-time train arrival predictions, and active service incidents. Data is extracted during WMATA operating hours.
 
-**Fact Tables**
-- `fact_train_predictions` — one row per train prediction snapshot (station, line, wait time, timestamp)
-- `fact_incidents` — one row per service incident (type, lines affected, description, duration)
+### 2. Data Transformation
+Cleaned and shaped raw API responses using Python and Pandas. Key transformations include parsing timestamps, calculating minutes to arrival, standardizing line codes, and categorizing incidents by keywords.
 
-**Dimension Tables**
-- `dim_station` — station name, line, coordinates
-- `dim_line` — line code, full name, color
-- `dim_date` — date attributes derived from snapshot timestamp
+### 3. Data Loading
+Loaded transformed dataframes into BigQuery using the ```google-cloud-bigquery``` Python connection. Implemented SQL logic to prevent duplicate rows.
 
-## Pipeline Details
+### 4. Pipeline Automation
+Automated the ETL pipeline using GitHub actions on a cron schedule that aligns to WMATA operating hours for all 7 days. 
 
-- Pulls data from 3 WMATA API endpoints every 15 minutes during operating hours
-- Handles special arrival statuses (BRD, ARR) and null resolution logic
-- Deduplicates fact tables on each run to prevent double-counting
-- Stores credentials securely via GitHub Secrets — no hardcoded keys
+### 5. Dashboard Development
+Connected BigQuery database to Looker Studio and built an interactive dashboard tracking service reliability KPIs, wait time trends, incident patterns, and station-level performance across all Metro lines.
 
-## Setup
+## Key Insights
 
-1. Clone the repo
-2. Create a GCP project and enable the BigQuery API
-3. Create a BigQuery dataset called `wmata_transit`
-4. Add a service account with BigQuery Editor and Job User roles
-5. Get a free WMATA API key at developer.wmata.com
-6. Add `WMATA_API_KEY` and `GCP_SERVICE_ACCOUNT_KEY` as GitHub Secrets
-7. The pipeline will run automatically via GitHub Actions
+- **Peak hour congestion**: Morning and evening rush hours show the longest average wait times, with the Red Line consistently experiencing higher delays than other lines
+- **Terminal station delays**: End-of-line stations such as Shady Grove and Greenbelt show the longest average wait times, suggesting scheduling gaps at turnaround points
+- **Incident patterns**: Single tracking is the most common incident type, disproportionately affecting the Red and Blue/Orange/Silver Lines
+- **Off-peak reliability**: Midday and weekend service shows significantly shorter and more consistent wait times across all lines
 
-## Local Development
+## Recommendations
 
-```bash
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env      # Fill in your credentials
-python src/main.py
-```
+- **Increase train frequency during peak hours** on the Red Line, which consistently shows the longest average wait times during morning and evening rush hours
+- **Investigate terminal station scheduling** at high-delay end-of-line stations to reduce turnaround gaps that contribute to longer waits
+- **Prioritize single tracking resolution** as the most frequent incident type. Faster resolution would have the highest impact on reducing commuter delays systemwide
+- **Use off-peak performance as a reliability benchmark** to set service targets and evaluate where peak hour performance falls short
