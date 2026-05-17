@@ -48,18 +48,22 @@ Loaded transformed dataframes into BigQuery using the ```google-cloud-bigquery``
 Automated the ETL pipeline using GitHub actions on a cron schedule that aligns to WMATA operating hours for all 7 days. 
 
 ### 5. Dashboard Development
-Connected BigQuery database to Looker Studio and built an interactive dashboard tracking service reliability KPIs, wait time trends, incident patterns, and station-level performance across all Metro lines.
+Connected BigQuery database to Looker Studio and built an interactive dashboard tracking service reliability KPIs, wait time trends, incident patterns, and station-level performance across all Metro lines. Link to Looker/ Data Studio dashboard [here.](https://datastudio.google.com/reporting/13d75f44-a299-4b11-b8f6-5c53e15df264)
+
+<img width="1194" height="896" alt="image" src="https://github.com/user-attachments/assets/d50e4f05-c8a4-4b2c-9242-063bf39b4d4a" />
+
+
 
 ## Key Insights
 
-- **Peak hour congestion**: Morning and evening rush hours show the longest average wait times, with the Red Line consistently experiencing higher delays than other lines
-- **Terminal station delays**: End-of-line stations such as Shady Grove and Greenbelt show the longest average wait times, suggesting scheduling gaps at turnaround points
-- **Incident patterns**: Single tracking is the most common incident type, disproportionately affecting the Red and Blue/Orange/Silver Lines
-- **Off-peak reliability**: Midday and weekend service shows significantly shorter and more consistent wait times across all lines
+- **Morning rush has the highest wait times**: The hour-of-day line chart shows a sharp spike around hour 8, with average wait times peaking near 35+ minutes during the morning rush, then dropping significantly through midday and evening hours
+- **Silver Line has the longest average wait**: At approximately 6-7 minutes on average, the Silver Line consistently outpaces other lines, likely due to its longer route stretching to Ashburn and the frequency gaps at end-of-line stations
+- **End-of-line stations experience the highest delays**: McLean, Greenbelt, Tysons, Loudoun Gateway, Ashburn, and Herndon dominate the top 6 highest wait time stations. These are all terminus or near terminus Silver line stops
+- **L'Enfant Plaza is the busiest station**: With the highest prediction volume across all snapshots, L'Enfant Plaza serves as the system's highest-traffic interchange. This can change over time as the pipeline keeps updating.
 
 ## Recommendations
 
-- **Increase train frequency during peak hours** on the Red Line, which consistently shows the longest average wait times during morning and evening rush hours
-- **Investigate terminal station scheduling** at high-delay end-of-line stations to reduce turnaround gaps that contribute to longer waits
-- **Prioritize single tracking resolution** as the most frequent incident type. Faster resolution would have the highest impact on reducing commuter delays systemwide
-- **Use off-peak performance as a reliability benchmark** to set service targets and evaluate where peak hour performance falls short
+- **Increase Silver Line frequency at terminus stations**: McLean, Ashburn, and Loudoun Gateway consistently show the longest wait times, suggesting scheduling gaps at turnaround points that could be reduced with more frequent service
+- **Prioritize single tracking resolution on Red and Silver Lines**: Both lines are disproportionately affected by single tracking incidents, which compound already long wait times during peak hours. This is based off early data, and can change as historical data updates over time.
+- **Add service capacity during morning rush hours**: The sharp morning peak suggests demand significantly outpaces supply during this window across all lines. Targeted frequency increases during 7-9 AM could meaningfully reduce average wait times
+- **Monitor end-of-line station performance as a reliability benchmark**: These stations consistently underperform system averages and should be tracked as leading indicators of overall service health
