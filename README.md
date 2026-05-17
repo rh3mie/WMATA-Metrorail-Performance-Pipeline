@@ -50,9 +50,7 @@ Automated the ETL pipeline using GitHub actions on a cron schedule that aligns t
 ### 5. Dashboard Development
 Connected BigQuery database to Looker Studio and built an interactive dashboard tracking service reliability KPIs, wait time trends, incident patterns, and station-level performance across all Metro lines. Link to Looker/ Data Studio dashboard [here.](https://datastudio.google.com/reporting/13d75f44-a299-4b11-b8f6-5c53e15df264)
 
-<img width="1194" height="896" alt="image" src="https://github.com/user-attachments/assets/d50e4f05-c8a4-4b2c-9242-063bf39b4d4a" />
-
-
+<img width="1195" height="895" alt="image" src="https://github.com/user-attachments/assets/57d66370-63cb-4298-9f62-a896c8ef1d55" />
 
 ## Key Insights
 
