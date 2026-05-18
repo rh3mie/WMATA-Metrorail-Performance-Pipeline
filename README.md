@@ -24,14 +24,14 @@ This project builds an end-to-end automated ETL pipeline that captures live WMAT
 - ```requirements.txt```: Python dependencies
 
 ## Google BigQuery Database
-The data is structured into a star schema to optimize queries and support dashboard use in Looker. In total, there are 4 tables:
+The data is structured to optimize queries and support dashboard use in Looker. In total, there are 4 tables:
 
 - ```fact_train_predictions```: For train prediction snapshots. Includes station, line, destination, minutes to arrival, and timestamp
 - ```fact_incidents```: For service incidents. Includes incident type, lines effected, description, and categorization
 - ```dim_station```: Station name, primary line, and geographic coordinates
 - ```dim_line```: line code, full line name, and hex color code
 
-With this star schema, the data has clear relationships through primary and foreign keys across time, station, and line dimensions. This keeps the model scalable, easy to maintain, and optimized for querying.
+With this schema, the data has clear relationships through primary and foreign keys across time, station, and line dimensions. This keeps the model scalable, easy to maintain, and optimized for querying.
 
 ## Key Steps
 
