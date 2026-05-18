@@ -25,6 +25,9 @@ def transform_stations(df):
 
 def transform_predictions(df):
     """Clean and shape predictions into fact_train_predictions."""
+    if df.empty:
+        print("No predictions to transform")
+        return df
     df = df.copy()
 
     # map line codes to full names
