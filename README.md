@@ -7,7 +7,7 @@ Transit agencies and commuters lack easy access to historical train performance 
 
 ## Solution/ Project Overview
 
-This project builds an end-to-end automated ETL pipeline that captures live WMATA train predictions and service incidents every 15 minutes during business hours. Then, it transforms them into an analytics-ready star schema in Google BigQuery, and visualizes KPIs in a Looker Studio (Data Studio) dashboard. This gives insights into train performance/ operations, such as:
+This project builds an end-to-end automated ETL pipeline that captures live WMATA train predictions and service incidents every 15 minutes during business hours. Then, it transforms them into an analytics-ready schema in Google BigQuery, and visualizes KPIs in a Looker Studio (Data Studio) dashboard. This gives insights into train performance/ operations, such as:
 
 - Train wait times by line and station
 - Peak vs. off-peak service patterns
